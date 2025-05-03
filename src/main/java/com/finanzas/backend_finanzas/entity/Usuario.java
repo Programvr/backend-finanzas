@@ -24,7 +24,7 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    private String nombre;
+    private String name;
     
     @Column(unique = true)
     private String email;
