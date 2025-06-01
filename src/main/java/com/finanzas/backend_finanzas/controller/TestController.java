@@ -15,7 +15,7 @@ public class TestController {
     }
 
     @GetMapping("/private")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USUARIO')")
     public String privateEndpoint() {
         return "Este es un endpoint privado";
     }
