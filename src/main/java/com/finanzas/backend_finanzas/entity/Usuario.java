@@ -9,31 +9,59 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "usuarios")
+@Table(name = "Usuarios")
 public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    private String name;
+    @Column(nullable = false)
+    private String nombre;
     
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
     
+    @Column(name = "password_hash", nullable = false)
     private String password;
+    
+    @Column(name = "fecha_registro", updatable = false)
+    private LocalDateTime fechaRegistro;
+    
+    @Column(name = "ultimo_login")
+    private LocalDateTime ultimoLogin;
+    
+    private boolean activo;
+    
+    @Column(name = "rol_predeterminado_id")
+    private Integer rolPredeterminadoId;
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "UsuarioRoles",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Rol> roles = new HashSet<>();
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("USER"));
+        // Obtener todos los permisos de los roles del usuario
+        return this.roles.stream()
+                .flatMap(rol -> rol.getPermisos().stream())
+                .map(permiso -> new SimpleGrantedAuthority(permiso.getCodigo()))
+                .collect(Collectors.toSet());
     }
     
     @Override
@@ -48,7 +76,7 @@ public class Usuario implements UserDetails {
     
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return activo;
     }
     
     @Override
@@ -58,6 +86,25 @@ public class Usuario implements UserDetails {
     
     @Override
     public boolean isEnabled() {
-        return true;
+        return activo;
+    }
+    
+    @PrePersist
+    protected void onCreate() {
+        this.fechaRegistro = LocalDateTime.now();
+        this.activo = true;
+    }
+    
+    public void agregarRol(Rol rol) {
+        this.roles.add(rol);
+    }
+    
+    public void removerRol(Rol rol) {
+        this.roles.remove(rol);
+    }
+    
+    public boolean tienePermiso(String permisoCodigo) {
+        return this.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals(permisoCodigo));
     }
 }
