@@ -93,4 +93,16 @@ public class AuthController {
                     .body(new ApiResponse(false, e.getMessage(), null));
         }
     }
+
+    @PostMapping("/search-email")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SearchEmailResponse> searchEmail(@RequestBody SearchEmailRequest request) {
+        try {
+            SearchEmailResponse usuario = authService.searchEmail(request.getEmail());
+            return ResponseEntity.ok(usuario);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new SearchEmailResponse(0,null,false, null));
+        }
+    }
 }
