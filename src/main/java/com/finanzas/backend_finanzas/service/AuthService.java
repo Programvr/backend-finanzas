@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +51,7 @@ public class AuthService {
         usuarioRepository.save(user);
         
         var jwtToken = jwtService.generateToken(user);
-        return new AuthResponse(jwtToken);
+        return new AuthResponse(jwtToken, user.getNombre(), user.getEmail(), user.getId());
     }
 
     @Transactional
@@ -153,5 +155,16 @@ public class AuthService {
         
         user.setActivo(true);
         return usuarioRepository.save(user);
+    }
+    @Transactional
+    public SearchEmailResponse searchEmail(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        List<Integer> roleIds = new ArrayList<>();
+        for (Rol rol : usuario.getRoles()) {
+            roleIds.add(rol.getId());
+        }
+        SearchEmailResponse response = new SearchEmailResponse(usuario.getId(),usuario.getEmail(),usuario.isActivo(),roleIds);
+        return response;
     }
 }
