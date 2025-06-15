@@ -143,6 +143,7 @@ public class TransaccionService {
 
     private TransaccionResponse mapToResponse(Transaccion transaccion) {
         return TransaccionResponse.builder()
+                .id(transaccion.getId())
                 .categoria(transaccion.getCategoria().getNombre())
                 .tipo(transaccion.getCategoria().getTipo())
                 .monto(transaccion.getMonto())
