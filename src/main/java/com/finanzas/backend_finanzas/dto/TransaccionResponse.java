@@ -11,6 +11,7 @@ import lombok.*;
 @Builder
 public class TransaccionResponse{
 
+        Integer id;
         String categoria;
         String tipo;
         BigDecimal monto;
