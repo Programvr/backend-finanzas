@@ -1,6 +1,5 @@
 package com.finanzas.backend_finanzas.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface InformeService {

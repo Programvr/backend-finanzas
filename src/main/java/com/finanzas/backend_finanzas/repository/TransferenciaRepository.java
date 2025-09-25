@@ -10,18 +10,18 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.finanzas.backend_finanzas.entity.Transaccion;
+import com.finanzas.backend_finanzas.entity.Transferencia;
 
 
 
 
 @Repository
-public interface TransaccionRepository extends JpaRepository<Transaccion, Integer> {
+public interface TransferenciaRepository extends JpaRepository<Transferencia, Integer> {
     
     boolean existsById(Integer id);
 
-    Page<Transaccion> findByUsuarioId(Integer usuarioId, Pageable pageable);
+    Page<Transferencia> findByUsuarioId(Integer usuarioId, Pageable pageable);
 
-    List<Transaccion> findByUsuarioIdAndFechaBetween(Integer usuarioId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+    List<Transferencia> findByUsuarioIdAndFechaBetween(Integer usuarioId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
     
 }

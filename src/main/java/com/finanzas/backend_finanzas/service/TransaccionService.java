@@ -1,5 +1,6 @@
 package com.finanzas.backend_finanzas.service;
 
+
 import com.finanzas.backend_finanzas.dto.TransaccionRequest;
 import com.finanzas.backend_finanzas.dto.TransaccionResponse;
 import com.finanzas.backend_finanzas.entity.Categoria;
@@ -153,4 +154,7 @@ public class TransaccionService {
                 .recurrente(transaccion.getRecurrente())
                 .build();
     }
+
+    
+    
 }
